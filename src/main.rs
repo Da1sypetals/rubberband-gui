@@ -4,9 +4,29 @@ use iced::{color, Center, Element, Fill, Font, Size, Task, Theme, Window};
 use iced::theme::Palette;
 
 use std::path::PathBuf;
+use std::sync::OnceLock;
 
 const FONT_BYTES: &[u8] = include_bytes!("../MouseMemoirs-Regular.ttf");
 const FONT: Font = Font::with_name("Mouse Memoirs");
+
+const RUBBERBAND_BIN: &[u8] = include_bytes!("../rubberband");
+
+fn rubberband_path() -> &'static PathBuf {
+    static PATH: OnceLock<PathBuf> = OnceLock::new();
+    PATH.get_or_init(|| {
+        let dir = std::env::temp_dir().join("rubberband-gui");
+        std::fs::create_dir_all(&dir).unwrap();
+        let name = if cfg!(windows) { "rubberband.exe" } else { "rubberband" };
+        let path = dir.join(name);
+        std::fs::write(&path, RUBBERBAND_BIN).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        path
+    })
+}
 
 fn pink_theme() -> Theme {
     Theme::custom(
@@ -270,7 +290,7 @@ fn build_output_path(input: &PathBuf, time: f64, pitch: i32) -> PathBuf {
 async fn run_rubberband(input: PathBuf, time: f64, pitch: i32) -> Result<String, String> {
     let output = build_output_path(&input, time, pitch);
 
-    let result = tokio::process::Command::new("rubberband")
+    let result = tokio::process::Command::new(rubberband_path())
         .arg("--time")
         .arg(format!("{:.2}", time))
         .arg("--pitch")
