@@ -9,6 +9,9 @@ use std::sync::OnceLock;
 const FONT_BYTES: &[u8] = include_bytes!("../MouseMemoirs-Regular.ttf");
 const FONT: Font = Font::with_name("Mouse Memoirs");
 
+#[cfg(windows)]
+const RUBBERBAND_BIN: &[u8] = include_bytes!("../rubberband.exe");
+#[cfg(not(windows))]
 const RUBBERBAND_BIN: &[u8] = include_bytes!("../rubberband");
 
 fn rubberband_path() -> &'static PathBuf {
