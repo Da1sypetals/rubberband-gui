@@ -130,46 +130,46 @@ impl App {
 
     fn view(&self) -> Element<'_, Message> {
         let title = text("Rubberband GUI")
-            .size(28)
+            .size(34)
             .color(color!(0xC06C84))
             .align_x(Center);
 
         // Time section
         let time_label = text(format!("Time: {:.2}x", self.time))
-            .size(20)
+            .size(24)
             .align_x(Center);
 
         let time_slider = slider(0.1..=3.0, self.time, Message::TimeChanged)
             .step(0.01)
-            .width(280);
+            .width(320);
 
         let reset_time_btn = button(
-            text("Reset 1x").size(14).align_x(Center),
+            text("Reset 1x").size(16).align_x(Center),
         )
         .on_press(Message::ResetTime)
         .style(button::secondary)
-        .padding([4, 12]);
+        .padding([6, 16]);
 
         // Pitch section
         let pitch_label = text(format!("Pitch: {} st", self.pitch))
-            .size(20)
+            .size(24)
             .align_x(Center);
 
         let pitch_controls = row![
-            button(text("  -  ").size(18).align_x(Center))
+            button(text("  -  ").size(22).align_x(Center))
                 .on_press_maybe((self.pitch > -12).then_some(Message::PitchDown))
                 .style(button::secondary)
-                .padding([6, 16]),
-            button(text("  0  ").size(14).align_x(Center))
+                .padding([8, 20]),
+            button(text("  0  ").size(16).align_x(Center))
                 .on_press(Message::PitchReset)
                 .style(button::secondary)
-                .padding([6, 12]),
-            button(text("  +  ").size(18).align_x(Center))
+                .padding([8, 16]),
+            button(text("  +  ").size(22).align_x(Center))
                 .on_press_maybe((self.pitch < 12).then_some(Message::PitchUp))
                 .style(button::secondary)
-                .padding([6, 16]),
+                .padding([8, 20]),
         ]
-        .spacing(10)
+        .spacing(14)
         .align_y(Center);
 
         // File section
@@ -182,25 +182,25 @@ impl App {
         };
 
         let pick_btn = button(
-            text("Select File").size(16).align_x(Center),
+            text("Select File").size(20).align_x(Center),
         )
         .on_press(Message::PickFile)
         .style(button::primary)
-        .padding([8, 20]);
+        .padding([10, 24]);
 
         let file_label = text(file_display)
-            .size(14)
+            .size(16)
             .color(color!(0x8B6F7E))
             .align_x(Center);
 
         // Process button
         let is_ready = self.input_file.is_some() && !matches!(self.status, Status::Processing);
         let process_btn = button(
-            text("Process").size(18).align_x(Center),
+            text("Process").size(22).align_x(Center),
         )
         .on_press_maybe(is_ready.then_some(Message::Process))
         .style(button::primary)
-        .padding([10, 40]);
+        .padding([12, 48]);
 
         // Status
         let status_text = match &self.status {
@@ -218,23 +218,23 @@ impl App {
 
         let content = column![
             title,
-            Space::new().height(10),
+            Space::new().height(14),
             time_label,
             time_slider,
             reset_time_btn,
-            Space::new().height(10),
+            Space::new().height(14),
             pitch_label,
             pitch_controls,
-            Space::new().height(15),
+            Space::new().height(20),
             pick_btn,
             file_label,
-            Space::new().height(15),
+            Space::new().height(20),
             process_btn,
-            Space::new().height(5),
-            text(status_text).size(13).color(status_color),
+            Space::new().height(8),
+            text(status_text).size(15).color(status_color),
         ]
-        .spacing(8)
-        .padding(25)
+        .spacing(10)
+        .padding(30)
         .align_x(Center)
         .width(Fill);
 
