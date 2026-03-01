@@ -14,6 +14,9 @@ const RUBBERBAND_BIN: &[u8] = include_bytes!("../rubberband.exe");
 #[cfg(not(windows))]
 const RUBBERBAND_BIN: &[u8] = include_bytes!("../rubberband");
 
+#[cfg(windows)]
+const SNDFILE_DLL: &[u8] = include_bytes!("../sndfile.dll");
+
 fn rubberband_path() -> &'static PathBuf {
     static PATH: OnceLock<PathBuf> = OnceLock::new();
     PATH.get_or_init(|| {
@@ -22,6 +25,10 @@ fn rubberband_path() -> &'static PathBuf {
         let name = if cfg!(windows) { "rubberband.exe" } else { "rubberband" };
         let path = dir.join(name);
         std::fs::write(&path, RUBBERBAND_BIN).unwrap();
+        #[cfg(windows)]
+        {
+            std::fs::write(dir.join("sndfile.dll"), SNDFILE_DLL).unwrap();
+        }
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
