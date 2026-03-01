@@ -2,7 +2,13 @@
 
 ### 1. Prepare you `rubberband` binary
 
-Put it in `./rubberband` or `./rubberband.exe` (for Windows)
+#### Unix-like
+
+Put it in `./rubberband`
+
+#### Windows
+
+Put it in `./rubberband.exe`. You also need `./sndfile.dll`
 
 ### 2. Run
 
