@@ -301,6 +301,7 @@ async fn run_rubberband(input: PathBuf, time: f64, pitch: i32) -> Result<String,
     let output = build_output_path(&input, time, pitch);
 
     let result = tokio::process::Command::new(rubberband_path())
+        .arg("-3")
         .arg("--time")
         .arg(format!("{:.2}", time))
         .arg("--pitch")
